@@ -1,0 +1,32 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: default
+spec:
+  version: '8.17.2'
+  count: 1
+  elasticsearchRef:
+    name: es-cluster
+  # Enable HTTP TLS with a self-signed certificate (ECK will generate certs).
+  http:
+    tls:
+      selfSignedCertificate: {}
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: '20m'
+            limits:
+              memory: 1Gi
+              cpu: '20m'
+          volumeMounts:
+            - name: kibana-data
+              mountPath: /usr/share/kibana/data
+      volumes:
+        - name: kibana-data
+          emptyDir:
+            sizeLimit: 1Gi
